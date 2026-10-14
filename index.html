@@ -346,7 +346,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-
 .epan h3{margin:0;font:700 1.4rem/1.1 var(--display,inherit);color:var(--head,inherit)}
 .epan p{margin:0;color:var(--ink2);font-size:.88rem}
 .epan label{font-size:.78rem;font-weight:700;color:var(--ink2);letter-spacing:.04em;text-transform:uppercase}
-.epan input[type=text]{width:100%;margin-top:6px;padding:14px 16px;border-radius:14px;border:0;background:var(--bg2);color:var(--ink);font:600 1rem inherit;box-shadow:inset 0 0 0 1.5px var(--line)}
+.epan input[type=text]{width:100%;margin-top:6px;padding:14px 16px;border-radius:14px;border:0;background:var(--bg2);color:var(--ink);font-family:inherit;font-weight:600;font-size:16px;box-shadow:inset 0 0 0 1.5px var(--line)}
 .epan input[type=text]:focus{outline:0;box-shadow:inset 0 0 0 2px var(--lime)}
 .erow{display:flex;gap:8px;flex-wrap:wrap}
 .echip{padding:8px 14px;border-radius:999px;border:0;background:var(--bg2);color:var(--ink);font-weight:600;font-size:.82rem;cursor:pointer;box-shadow:inset 0 0 0 1.5px var(--line);display:inline-flex;align-items:center;gap:7px}
@@ -400,7 +400,28 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-
 .clist li:last-child{border-bottom:0}.clist span{color:#5d6350;font-weight:600}.clist b{color:#2d3516;text-align:right;overflow-wrap:anywhere}
 .cact{display:flex;flex-direction:column;gap:10px}.cact p{margin:0;font-size:.84rem;color:var(--ink2);text-align:center}
 .cact .btn{width:100%}
-body:has(#capOv.on) .mascot,body:has(#engOv.on) .mascot .mb{visibility:hidden}
+body:has(#capOv.on) .mascot,body:has(#engOv.on) .mascot{visibility:hidden}
+@media (max-width:779px){
+.eo{padding:8px;align-items:flex-start;padding-top:max(8px,env(safe-area-inset-top))}
+.ew{border-radius:18px;max-height:calc(100dvh - 16px)}
+.estage{width:min(100%,calc(38dvh * var(--ar,1.3333)));max-height:38dvh;justify-self:center;border-radius:0}
+.ew{background:linear-gradient(#15170f 0 38dvh,var(--surface) 0)}
+.epan{gap:10px;padding:14px 14px 16px;background:var(--surface)}
+.epan h3{font-size:1.05rem}.epan p{font-size:.76rem;line-height:1.35}
+.epan label{font-size:.66rem}
+.epan input[type=text]{margin-top:4px;padding:10px 12px;border-radius:12px}
+.fdd{margin-top:4px}.fdd-b{min-height:42px;font-size:1.1rem;border-radius:12px}
+.fdd-l{max-height:184px}.fdd-o{min-height:38px;font-size:1.08rem}
+.echip{padding:6px 12px;font-size:.76rem}
+.epan .btn{min-height:44px;font-size:.88rem}.epan .btn .go{width:30px;height:30px}
+.epan input[type=range]{margin-top:2px}
+.ex2{top:8px;right:8px;width:34px;height:34px}.ex2 svg{width:15px;height:15px}
+.cw{gap:10px;padding:10px;border-radius:18px}
+.chd{padding:10px 48px 8px 12px;font-size:.92rem}
+.cstage{width:min(100%,calc(34dvh * var(--ar,1.3333)));margin:0 auto}
+.clist{padding:2px 8px 6px}.clist li{padding:6px 4px;font-size:.78rem}
+.cact{gap:8px}.cact p{font-size:.74rem}.cact .btn{min-height:44px;font-size:.88rem}
+}
 </style>
 <style id="mascotCss">
 /* ===== Mascota virtual (Cari = cartera / Billi = billetera) ===== */
@@ -886,7 +907,9 @@ const $=id=>document.getElementById(id);
 const FT={f01:"normal 400 {s} 'LF-f01',cursive",f02:"normal 400 {s} 'LF-f02',cursive",f03:"normal 400 {s} 'LF-f03',cursive",f04:"normal 400 {s} 'LF-f04',cursive",f05:"normal 400 {s} 'LF-f05',cursive",f06:"normal 400 {s} 'LF-f06',cursive",f07:"normal 400 {s} 'LF-f07',serif",f08:"normal 400 {s} 'LF-f08',sans-serif"};
 const S={p:null,text:'',size:9,x:50,y:58,font:'f01',col:'#2a1a10',busy:false,done:false,raf:0};
 const fnt=(u)=>FT[S.font].replace('{s}',u)+'';
-const tone=()=>S.tone||S.col;
+function lumGrid(img){try{const N=24,c=document.createElement('canvas');c.width=c.height=N;const k=c.getContext('2d');k.drawImage(img,0,0,N,N);const d=k.getImageData(0,0,N,N).data,g=[];for(let i=0;i<d.length;i+=4)g.push((d[i]*.3+d[i+1]*.59+d[i+2]*.11)/255);return g}catch(e){return null}}
+const tone=()=>{const g=S.lg;if(!g)return S.tone||S.col;const N=24,cx0=Math.round(S.x/100*(N-1)),cy0=Math.round(S.y/100*(N-1));let s=0,n=0;
+for(let j=-1;j<=1;j++)for(let i=-3;i<=3;i++){const x=cx0+i,y=cy0+j;if(x>=0&&y>=0&&x<N&&y<N){s+=g[y*N+x];n++}}return s/n>.3?'#2a1a10':'#8c6d55'};
 let cv,cx,rv,rx,tm,tx,W,H,D,sparks=[];
 function say(t){$('engSay').textContent=t}
 function paintTxt(){const e=$('engTxt');$('engT').textContent=S.text;e.style.font=fnt(S.size+'cqw');e.style.left=S.x+'%';e.style.top=S.y+'%';e.style.color=tone();
@@ -896,8 +919,8 @@ function lumOf(img){try{const c=document.createElement('canvas');c.width=c.heigh
 window.openEngraver=function(){const p=currentProduct;if(!p)return;
 if(!S.p||S.p.codigo!==p.codigo){clearAll();S.p=p;S.x=50;S.y=58;S.size=9}
 const im=$('engImg'),src=imgSrc(p.imagen);
-im.onload=()=>{if(im.naturalWidth)$('engStage').style.aspectRatio=im.naturalWidth+' / '+im.naturalHeight;S.col='#2a1a10';S.tone=lumOf(im)>.3?'#2a1a10':'#8c6d55';setChip($('engCols'),'c',S.col);paintTxt()};
-S.col='#2a1a10';S.tone='#2a1a10';$('engStage').style.aspectRatio='4 / 3';im.style.display=src?'':'none';if(src)im.src=src;
+im.onload=()=>{if(im.naturalWidth){$('engStage').style.aspectRatio=im.naturalWidth+' / '+im.naturalHeight;$('engOv').style.setProperty('--ar',im.naturalWidth/im.naturalHeight)}S.col='#2a1a10';S.tone=lumOf(im)>.3?'#2a1a10':'#8c6d55';S.lg=lumGrid(im);setChip($('engCols'),'c',S.col);paintTxt()};
+S.col='#2a1a10';S.tone='#2a1a10';S.lg=null;$('engStage').style.aspectRatio='4 / 3';$('engOv').style.setProperty('--ar',4/3);im.style.display=src?'':'none';if(src)im.src=src;
 $('engPn').textContent=p.nombre+' · COD.'+p.codigo;setChip($('engCols'),'c',S.col);syncFont();
 $('engOv').classList.add('on');say('¡Listo para grabar!');showBot(false);
 const b=$('engBot');b.style.opacity=1;b.style.transform='translate(8px,8px)';
@@ -916,10 +939,10 @@ function clearAll(){cancelAnimationFrame(S.raf);S.busy=false;S.done=false;sparks
 function setup(){const st=$('engStage');cv=$('engCv');W=st.clientWidth;H=st.clientHeight;D=Math.min(2,devicePixelRatio||1);
 cv.width=W*D;cv.height=H*D;cx=cv.getContext('2d');cx.setTransform(D,0,0,D,0,0);
 const mk=()=>{const c=document.createElement('canvas');c.width=W*D;c.height=H*D;return c};rv=mk();rx=rv.getContext('2d');tm=mk();tx=tm.getContext('2d')}
-function run(){if(S.busy)return;loadFont().then(run0)}
+function run(){if(S.busy)return;const a=document.activeElement;if(a&&a.blur)a.blur();loadFont().then(()=>setTimeout(run0,a&&a.id==='engIn'?350:0))}
 function run0(){if(S.busy)return;
 S.text=($('engIn').value||'').trim()||'Infinity Leather';$('engIn').value=S.text;
-$('engOv').querySelector('.ew').scrollTo({top:0,behavior:'smooth'});clearAll();setup();
+$('engOv').querySelector('.ew').scrollTo({top:0,behavior:'smooth'});window.scrollTo(0,window.scrollY);clearAll();setup();
 const mw=S.text.length*S.size*.62;if(mw>86)S.size=Math.max(3,S.size*86/mw);$('engSz').value=S.size;
 const px=S.size/100*W,cxp=S.x/100*W,cyp=S.y/100*H;
 // texto completo en canvas oculto
@@ -981,13 +1004,13 @@ k.textAlign='right';k.fillStyle='#2d3516';k.font="700 32px 'Hanken Grotesk',Aria
 k.textAlign='center';k.fillStyle='#5d6350';k.font="500 26px 'Hanken Grotesk',Arial,sans-serif";k.fillText('Diseño referencial · '+new Date().toLocaleDateString('es-PE'),W0/2,FH-45);
 try{c.toBlob(b=>res(b),'image/png')}catch(e){res(null)}})}
 function openCap(){if(S.busy)return;if(!S.done)place();
-const st=$('engStage'),cs=$('capStage');cs.style.aspectRatio=st.style.aspectRatio||'4 / 3';
+const st=$('engStage'),cs=$('capStage');cs.style.aspectRatio=st.style.aspectRatio||'4 / 3';$('capOv').style.setProperty('--ar',$('engOv').style.getPropertyValue('--ar')||4/3);
 const ci=$('capImg'),im=$('engImg');ci.style.display=im.style.display;if(im.style.display!=='none')ci.src=im.src;
 const ct=$('capT');ct.textContent=S.text;ct.style.font=fnt(S.size+'cqw');ct.style.left=S.x+'%';ct.style.top=S.y+'%';ct.style.color=tone();ct.style.textShadow=$('engTxt').style.textShadow;
 $('capList').innerHTML=capInfo().map(r=>'<li><span>'+r[0]+'</span><b></b></li>').join('');$('capList').querySelectorAll('b').forEach((b,i)=>b.textContent=capInfo()[i][1]);
 const sv=$('capSave');sv.hidden=true;$('capHint').textContent='Toma una captura de pantalla de esta tarjeta y adjúntala en el chat de WhatsApp.';
 if(capUrl){URL.revokeObjectURL(capUrl);capUrl=''}capBlob=null;
-$('capOv').classList.add('on');
+$('capOv').classList.add('on');$('capOv').querySelector('.cw').scrollTop=0;
 loadFont().then(capImage).then(b=>{if(!b)return;capBlob=b;capUrl=URL.createObjectURL(b);sv.hidden=false;
 $('capHint').textContent='Guarda la imagen de tu diseño (o toma una captura de pantalla) y adjúntala en el chat de WhatsApp.'})}
 $('engWa').onclick=openCap;
